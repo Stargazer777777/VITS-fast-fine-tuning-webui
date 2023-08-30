@@ -1,0 +1,24 @@
+@import './base.scss';
+
+.btns {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn {
+  width: 80px;
+  height: 34px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+  background-color: #ffc83e;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: var(--el-box-shadow-light);
+}
