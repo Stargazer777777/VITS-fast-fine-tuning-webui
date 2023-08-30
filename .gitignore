@@ -1,0 +1,10 @@
+venv
+monotonic_align/build/
+monotonic_align/core.c
+monotonic_align/monotonic_align/
+sampled_audio4ft.txt
+sampled_audio4ft/
+sampled_audio4ft_v2.zip
+
+*cache*
+data
