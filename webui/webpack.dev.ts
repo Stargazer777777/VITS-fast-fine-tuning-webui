@@ -27,7 +27,7 @@ export default (): DevWebpackConfig => {
       },
       proxy: {
         '/api': {
-          target: 'http://localhost:3000',
+          target: 'http://192.168.164.107:7777',
           pathRewrite: { '^/api': '' },
           secure: false,
         },

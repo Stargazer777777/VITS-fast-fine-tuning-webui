@@ -7,6 +7,9 @@ import { VueLoaderPlugin } from 'vue-loader';
 import WebpackBar from 'webpackbar';
 import ESLintPlugin from 'eslint-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
+import AutoImport from 'unplugin-auto-import/webpack';
+import Components from 'unplugin-vue-components/webpack';
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
 
 const config = (env: Record<string, boolean>): webpack.Configuration => {
   const isProd = env.production;
@@ -43,6 +46,13 @@ const config = (env: Record<string, boolean>): webpack.Configuration => {
             globOptions: { ignore: ['**/index.html'] }, // 复制public里面的所有内容，除了index.html
           },
         ],
+      }),
+      //el 自动导入
+      AutoImport({
+        resolvers: [ElementPlusResolver()],
+      }),
+      Components({
+        resolvers: [ElementPlusResolver()],
       }),
     ],
     resolve: {

@@ -11,6 +11,10 @@ const router = createRouter({
       path: '/home',
       component: () => import('@/views/homeFrame.vue'),
     },
+    {
+      path: '/train',
+      component: () => import('@/views/tranningFrame.vue'),
+    },
   ],
 });
 

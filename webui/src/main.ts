@@ -2,7 +2,8 @@ import { createApp } from 'vue';
 import App from './App.vue';
 const app = createApp(App);
 
-import './scss/base';
+import 'element-plus/dist/index.css';
+import './scss/_index.scss';
 
 const asyncRegister = async () => {
   const { default: store } = await import('./stores/index');
