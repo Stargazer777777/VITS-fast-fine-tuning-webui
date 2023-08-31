@@ -5,6 +5,9 @@ monotonic_align/monotonic_align/
 sampled_audio4ft.txt
 sampled_audio4ft/
 sampled_audio4ft_v2.zip
+custom_character_voice/
+pretrained_models/
+raw_audio/
 
 *cache*
 data
