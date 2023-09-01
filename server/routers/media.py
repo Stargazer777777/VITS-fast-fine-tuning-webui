@@ -2,7 +2,7 @@ from fastapi import APIRouter, Query, HTTPException, status, FastAPI, File, Uplo
 from typing import List
 import os
 import shutil
-from server.my_utils import get_abs_path
+from server.my_utils import get_abs_path, rm_abs_dir, rm_abs_file, mkdir_ifnot_exist
 
 router = APIRouter(tags=["media"], prefix="/media")
 
@@ -10,8 +10,7 @@ router = APIRouter(tags=["media"], prefix="/media")
 async def write_uploadfile(
     dirname: str, role_name: str, upload_files: List[UploadFile]
 ):
-    if not os.path.exists(dirname):
-        os.mkdir(dirname)
+    mkdir_ifnot_exist(dirname)
     for upload_file in upload_files:
         dir_len = len(os.listdir(dirname))
         filename = f"{role_name}_{dir_len+1}-{upload_file.filename}"
