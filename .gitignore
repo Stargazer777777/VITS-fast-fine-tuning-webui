@@ -8,6 +8,12 @@ sampled_audio4ft_v2.zip
 custom_character_voice/
 pretrained_models/
 raw_audio/
+denoised_audio/
+long_character_anno.txt
+separated/
+short_character_anno.txt
+segmented_character_voice/
+win_bin
 
 *cache*
 data

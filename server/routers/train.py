@@ -1,31 +1,45 @@
-from fastapi import APIRouter, Query, HTTPException, status
+from fastapi import APIRouter, Query, HTTPException, status, Body
 import os
 import shutil
-from server.my_utils import get_abs_path
+from server.my_utils import get_abs_path, rm_abs_dir, rm_abs_file
 from pydantic import BaseModel
 import wget
 
 router = APIRouter(tags=["train"], prefix="/train")
 
 
+def clear_raw_media_data():
+    rm_abs_dir("custom_character_voice")
+    rm_abs_dir("raw_audio")
+    # shutil.rmtree(get_abs_path("video_data"))
+    # os.mkdir(get_abs_path("video_data"))
+
+
+def clear_resolced_media_data():
+    rm_abs_dir("denoised_audio")
+    os.mkdir(get_abs_path("denoised_audio"))
+    rm_abs_dir("segmented_character_voice")
+    os.mkdir(get_abs_path("segmented_character_voice"))
+    rm_abs_dir("denoised_audio")
+    os.mkdir(get_abs_path("denoised_audio"))
+    rm_abs_dir("separated")
+    os.mkdir(get_abs_path("separated"))
+    rm_abs_file("long_character_anno.txt")
+    rm_abs_file("short_character_anno.txt")
+
+
 def use_media_data(role_name: str):
+    clear_raw_media_data()
     dirname = get_abs_path("data", "roles", role_name)
-    if os.path.exists(get_abs_path("custom_character_voice")):
-        shutil.rmtree(get_abs_path("custom_character_voice"))
+    if not os.path.exists(os.path.join(dirname, "short_audios")):
+        os.mkdir(os.path.join(dirname, "short_audios"))
     shutil.copytree(
         os.path.join(dirname, "short_audios"),
         get_abs_path("custom_character_voice", f"{role_name}_1"),
     )
-    if os.path.exists(get_abs_path("raw_audio")):
-        shutil.rmtree(get_abs_path("raw_audio"))
+    if not os.path.exists(os.path.join(dirname, "long_audios")):
+        os.mkdir(os.path.join(dirname, "long_audios"))
     shutil.copytree(os.path.join(dirname, "long_audios"), get_abs_path("raw_audio"))
-
-
-def clear_raw_media_data():
-    shutil.rmtree(get_abs_path("custom_character_voice"))
-    shutil.rmtree(get_abs_path("raw_audio"))
-    # shutil.rmtree(get_abs_path("video_data"))
-    # os.mkdir(get_abs_path("video_data"))
 
 
 def select_pre_model(model_name: str):
@@ -102,13 +116,30 @@ def select_pre_model(model_name: str):
     print("select pre model successfully")
 
 
-select_pre_model("CJ")
-
-
-class TrainOptions(BaseModel):
-    pre_model: str = "C"
+def process_media_data(model_name: str, whisper_size: str):
+    clear_resolced_media_data()
+    os.system(f"python {get_abs_path('scripts','video2audio.py')}")
+    os.system(f"python {get_abs_path('scripts','denoise_audio.py')}")
+    os.system(
+        f"python {get_abs_path('scripts', 'long_audio_transcribe.py')} --languages {model_name} --whisper_size {whisper_size}"
+    )
+    os.system(
+        f"python {get_abs_path('scripts', 'short_audio_transcribe.py')} --languages {model_name} --whisper_size {whisper_size}"
+    )
+    os.system(f"python {get_abs_path('scripts', 'resample.py')}")
 
 
 @router.post("/start")
-def start_train():
-    return
+async def start_train(
+    role_name: str,
+    pre_model: str = Query(description="C, CJ, CJE"),
+    whisper_size: str = Query(description="small, medium, large"),
+    is_cont: bool = Query(description="is Continue"),
+):
+    if not os.path.exists(get_abs_path("data", "roles", role_name)):
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "target role not exist")
+    use_media_data(role_name)
+    select_pre_model(pre_model)
+    process_media_data(pre_model, whisper_size)
+
+    return "success"

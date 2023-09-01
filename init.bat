@@ -13,8 +13,11 @@ python -m pip install imageio -i %mirror%
 python -m pip install --upgrade youtube-dl -i %mirror%
 python -m pip install moviepy -i %mirror%
 
-python -m pip install --no-build-isolation -r requirements.txt -i %mirror%
+python -m pip install -r requirements.txt -i %mirror%
+python -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu117
+
 python -m pip install --upgrade --force-reinstall numba -i %mirror%
+python -m pip install --upgrade --force-reinstall ffmpeg-python -i %mirror%
 
 python -m pip install --upgrade pyzmq -i %mirror%
 python -m pip install pydantic==1.10.4 -i %mirror%

@@ -69,7 +69,7 @@ async def delete_short_audio(role_name: str, filename: str):
 
 @router.post("/long_audio/upload")
 async def upload_long_audios(
-    role_name: str, files: List[UploadFile] = File(media_type="audio")
+    role_name: str, files: List[UploadFile] = File(media_type="audio/wav")
 ):
     target_dirname = get_abs_path("data", "roles", role_name)
     if os.path.exists(target_dirname):
